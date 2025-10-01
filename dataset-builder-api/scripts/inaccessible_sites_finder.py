@@ -13,13 +13,13 @@ os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
 csv_path = os.path.expanduser("~/Downloads/majestic_million.csv")
 
-chunksize = 2500
+chunksize = 3000
 URLS = []
 
-for chunk in pd.read_csv(csv_path, usecols=['domain'], chunksize=chunksize):
-    URLS.extend(chunk['domain'].tolist())
-    if len(URLS) >= 2500:
-        URLS = URLS[:2500]
+for chunk in pd.read_csv(csv_path, usecols=['Domain'], chunksize=chunksize):
+    URLS.extend(chunk['Domain'].tolist())
+    if len(URLS) >= 3000:
+        URLS = URLS[:3000]
         break
 
 start_time = time.time()
@@ -29,6 +29,9 @@ for url in URLS:
   if (time.time() - start_time) > MAX_RUN_TIME:
       print("Max runtime reached, stopping.")
       break
+  
+  if not url.startswith(("http://", "https://")):
+    url = "https://" + url
     
   site_id = a11y_audit_utils.url_to_id(url)
   audit_result = a11y_audit_utils.audit_site(url, site_id)
